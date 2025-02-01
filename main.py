@@ -7,7 +7,13 @@ def create_flights():
     conn.execute("DROP TABLE IF EXISTS flights")
     conn.execute("CREATE TABLE flights (flight_ID VARCHAR(20), origin VARCHAR(20), destination VARCHAR(20), pilotID VARCHAR(20), departuredate DATE, departuretime VARCHAR(20))")
 
+def create_destinations():
+    conn.execute("DROP TABLE IF EXISTS destinations")
+    conn.execute("CREATE TABLE destinations (destination_ID VARCHAR(20), latitude VARCHAR(20), longitude VARCHAR(20))")
 
+def create_pilots():
+    conn.execute("DROP TABLE IF EXISTS pilots")
+    conn.execute("CREATE TABLE pilots (pilot_ID VARCHAR(20), forename VARCHAR(20), surname VARCHAR(20))")
 
 def add_flight(parameters):
     print(str(parameters) + 'parameters')
@@ -61,6 +67,8 @@ def process_command(string):
 main = True
 
 create_flights()
+create_destinations()
+create_pilots()
 
 
 

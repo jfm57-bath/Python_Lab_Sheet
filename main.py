@@ -126,6 +126,9 @@ main = True
 
 create_flights()
 welcome_sequence()
+create_destinations()
+create_pilots()
+
 
 
 

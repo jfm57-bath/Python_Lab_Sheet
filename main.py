@@ -5,6 +5,8 @@ print ("Database has been created")
 def create_flights():
     conn.execute("DROP TABLE IF EXISTS flights")
     conn.execute("CREATE TABLE flights (flight_ID VARCHAR(20), origin VARCHAR(20), destination VARCHAR(20), pilotID VARCHAR(20), departuredate DATE, departuretime VARCHAR(20))")
+    conn.execute("INSERT INTO flights (flight_ID,origin,destination,pilotID,departuredate,departuretime)VALUES \
+  ('LS1339','Birmingham','Vienna','1','2025-02-04','15:40')")
 
 def check_item(table, column, name):
     # check whether an item is an a column of a specific table.
@@ -26,11 +28,18 @@ def add_flight(parameters):
     conn.commit()
 
 def view_schedule(name,surname):
-    if name == '' and surname == '':
-        print('Showing list of pilots')
-        #show list of pilots and prompt to select from list.
-    else:
-        print('Searching records')
+    print("Please type the forename of the pilot")
+    print("Please type the surname of the pilot")
+    # check that the pilot is included in the list
+    if check_item('flight', 'destination', temp_origin) == False:
+        print("Origin not found, please select an origin")
+
+
+    # if name == '' and surname == '':
+    #     print('Showing list of pilots')
+    #     #show list of pilots and prompt to select from list.
+    # else:
+    #     print('Searching records')
     print("Query")
     cursor = conn.execute("SELECT origin,destination,departuredate,departuretime from flights")
     for row in cursor:
@@ -40,9 +49,26 @@ def view_schedule(name,surname):
         print("time = ", row[3], "\n")
 
 def assign(pilot_ID,flight_ID):
-    print('Assigning')
+    #change line below to a query for flights that currently don't have a pilot assigned. 
+    cursor = conn.execute("SELECT origin,destination,departuredate,departuretime from flights")
+    for row in cursor:
+        print("origin = ", row[0])
+        print("destination = ", row[1])
+        print("date = ", row[2])
+        print("time = ", row[3], "\n")
+    ##Allow the user to select one of flights by ID
+    ##Show list of pilots
+    ##Add an update to change the field. 
+    print('Assigning pilot to this flight')
+    conn.commit()
 
 def view_flights():
+    cursor = conn.execute("SELECT origin,destination,departuredate,departuretime from flights")
+    for row in cursor:
+        print("origin = ", row[0])
+        print("destination = ", row[1])
+        print("date = ", row[2])
+        print("time = ", row[3], "\n")
     print('viewing flights')
 
 def update_flight():
@@ -60,8 +86,8 @@ def commands(letter):
     match letter[0]:
         case 'ADD':
             return (add_flight(letter[1]))
-        case 'VIEWFLIGHTS':
-            return (view_flights(letter[1],letter[2]))
+        case 'VIEWFLIGHTS': #view all the flights in the database
+            return (view_flights())
         case 'UPDATE':
             return (update_flight(letter[1]))
         case 'ASSIGN':

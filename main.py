@@ -2,11 +2,27 @@ import sqlite3
 conn = sqlite3.connect('store')
 print ("Database has been created")
 
+
+firstnames = ['Pedro', 'William', 'Numaan', 'Themiya', 'Mohammed', 'Thomas','Sarah', 'Zoe', 'Natalie','Alice','Verity','Zainab','Peter','James','Joanna','Sinead']
+surnames = ['Murphy','Sanchez','Disraeli','Higgins','Smith','Gladstone','Cameron','Rubio','Fitzgerald','Western','Brown','McGlynn','McGrath','Siriwardhana']
+
+cities = ['Birmingham','Manchester','London','Bristol','Paris','Toulouse','Berlin','Madrid','Barcelona','Ibiza','Rome','Florence','Geneva','Frankfurt']
+
+
+
 def create_flights():
     conn.execute("DROP TABLE IF EXISTS flights")
     conn.execute("CREATE TABLE flights (flight_ID VARCHAR(20), origin VARCHAR(20), destination VARCHAR(20), pilotID VARCHAR(20), departuredate DATE, departuretime VARCHAR(20))")
     conn.execute("INSERT INTO flights (flight_ID,origin,destination,pilotID,departuredate,departuretime)VALUES \
   ('LS1339','Birmingham','Vienna','1','2025-02-04','15:40')")
+
+def create_destinations():
+    conn.execute("DROP TABLE IF EXISTS destinations")
+    conn.execute("CREATE TABLE destinations (destination_ID VARCHAR(20), latitude VARCHAR(20), longitude VARCHAR(20))")
+
+def create_pilots():
+    conn.execute("DROP TABLE IF EXISTS pilots")
+    conn.execute("CREATE TABLE pilots (pilot_ID VARCHAR(20), forename VARCHAR(20), surname VARCHAR(20))")
 
 def check_item(table, column, name):
     # check whether an item is an a column of a specific table.

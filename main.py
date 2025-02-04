@@ -36,7 +36,6 @@ def add_flight(parameters):
             destination = temp_destination ##do a lookup here
             progress = True
 
-    print(str(parameters) + 'parameters')
     print("Please enter the departure date")
     temp_departuredate = input()
     print("Please enter the departure time")
@@ -45,6 +44,8 @@ def add_flight(parameters):
     conn.execute("INSERT INTO flights (flight_ID, origin,destination,pilot_ID,departuredate,departuretime)VALUES \
   ('BHX455','Birmingham','" + temp_destination + "','123','" + temp_departuredate +"','" + temp_departuretime + "')")
     conn.commit()
+
+    print("Flight successfully added!")
 
 def view_schedule(name,surname):
     print("Please type the forename of the pilot")
@@ -115,7 +116,7 @@ def welcome_sequence():
 def commands(letter):
     #All commands have two options for usage. Either state the command and then it will walk you through the options. Or if you know the innputs already you can enter them.
     match letter[0]:
-        case 'ADD':
+        case 'ADD': #add a flight 
             return (add_flight('test'))
         case 'VIEWFLIGHTS': #view all the flights in the database
             return (view_flights())
@@ -135,9 +136,9 @@ def commands(letter):
         #     return (add_destination())
 
 def process_command(string):
-    result = string.split()
-    print(result)
-    print(commands(result))
+    commands(string.split())
+    # print(result)
+    # print(commands(result))
 
 def initialise():
     create_tables()
@@ -148,6 +149,7 @@ main_loop = True
 def main_loop_fct():
     #Main loop function that reads commands
     while main_loop == True:
+        print("Please enter the command you wish to use:")
         process_command(input())
 
 if __name__== '__main__':

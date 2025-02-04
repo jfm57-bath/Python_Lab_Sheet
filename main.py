@@ -2,7 +2,6 @@ import sqlite3
 conn = sqlite3.connect('store')
 print ("Database has been created")
 
-
 firstnames = ['Pedro', 'William', 'Numaan', 'Themiya', 'Mohammed', 'Thomas','Sarah', 'Zoe', 'Natalie','Alice','Verity','Zainab','Peter','James','Joanna','Sinead']
 surnames = ['Jones','Mason','Murphy','Sanchez','Disraeli','Higgins','Smith','Gladstone','Cameron','Rubio','Fitzgerald','Western','Brown','McGlynn','McGrath','Siriwardhana']
 
@@ -14,8 +13,9 @@ cities = ['Birmingham','Manchester','London','Bristol','Paris','Toulouse','Berli
 def create_flights():
     conn.execute("DROP TABLE IF EXISTS flights")
     conn.execute("CREATE TABLE flights (flight_ID VARCHAR(20), origin VARCHAR(20), destination VARCHAR(20), pilotID VARCHAR(20), departuredate DATE, departuretime VARCHAR(20))")
+    # time = time()
     conn.execute("INSERT INTO flights (flight_ID,origin,destination,pilotID,departuredate,departuretime)VALUES \
-  ('LS1339','Birmingham','Vienna','1','2025-02-04','15:40')")
+  ('LS1339','Birmingham','Vienna','1','2025-02-04','" + "12:00:00" + "')")
 
 def create_destinations():
     conn.execute("DROP TABLE IF EXISTS destinations")
@@ -56,8 +56,6 @@ def view_schedule(name,surname):
     # check that the pilot is included in the list
     if check_item('flight', 'destination', temp_origin) == False:
         print("Origin not found, please select an origin")
-
-
     # if name == '' and surname == '':
     #     print('Showing list of pilots')
     #     #show list of pilots and prompt to select from list.
@@ -99,40 +97,47 @@ def update_flight():
     print("What is the flightID that you want to edit?")
     ##check whether the flight is included in the list
 
-
-
-
 def welcome_sequence():
     print("Welcome to the flight management system. You can use the command line to enter your commands.")
     print("The avaiable commands are, ADD, VIEW, etc.")
 
+#######
+
+#have two different commands. One for the actual sql action. The other for the sequence with inputs etc.
+#call the UI input first. 
+#######
 
 def commands(letter):
     #All commands have two options for usage. Either state the command and then it will walk you through the options. Or if you know the innputs already you can enter them.
-    print(letter[0])
     match letter[0]:
         case 'ADD':
-            return (add_flight(letter[1]))
+            return (add_flight('test'))
         case 'VIEWFLIGHTS': #view all the flights in the database
             return (view_flights())
         case 'UPDATE':
-            return (update_flight(letter[1]))
+            return (update_flight())
         case 'ASSIGN':
-            return (assign(letter[1],letter[2]))
+            return (assign())
         case 'VIEWSCHEDULE':
-            return (view_schedule(letter[1],letter[2]))
-        case 'VIEWDESTINTATION':
-            return print('hello')
+            return (view_schedule())
+        case 'VIEWDESTINTATIONS':
+            return (view_destinations())
         case 'UPDATEDESTINATION':
-            return print('test')
+            return (update_destination)
         case 'ADDDESTINATION':
-            return print('test')
+            return (add_destination())
 
 def process_command(string):
     result = string.split()
     print(result)
     print(commands(result))
 
+
+
+
+
+
+###################
 main = True
 
 create_flights()
@@ -142,9 +147,14 @@ create_pilots()
 
 check_item('flights','destination','Vienna')
 
+# def main_fct():
+#     #loop
+
+
 while main == True:
     process_command(input())
     
 
 
-
+# if __name__=='main':
+#     main_fct

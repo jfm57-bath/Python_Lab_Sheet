@@ -1,55 +1,11 @@
 import sqlite3
-conn = sqlite3.connect('store.db')
-print ("Database has been created")
 
-
-#########This section of code needs to be moved
-# with open('scheduling.sql', 'r') as sql_file:
-#     sql_script = sql_file.read()
-
-# db = sqlite3.connect('scheduling.db')
-# cursor = db.cursor()
-# cursor.executescript(sql_script)
-# db.commit()
-# db.close()
-
-firstnames = ['Pedro', 'William', 'Numaan', 'Themiya', 'Mohammed', 'Thomas','Sarah', 'Zoe', 'Natalie','Alice','Verity','Zainab','Peter','James','Joanna','Sinead']
-surnames = ['Jones','Mason','Murphy','Sanchez','Disraeli','Higgins','Smith','Gladstone','Cameron','Rubio','Fitzgerald','Western','Brown','McGlynn','McGrath','Siriwardhana']
-pilotID = ['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16']
-
-cities = ['Birmingham','Manchester','London','Bristol','Paris','Toulouse','Berlin','Madrid','Barcelona','Ibiza','Rome','Florence','Geneva','Frankfurt']
-
-# def time():
-#     conn.execute(SELECT datetime(strftime('%s', '2000-01-01 00:00:00') + abs(random() % (strftime('%s', '2000-01-31 23:59:59') - strftime('%s', '2000-01-01 00:00:00') )),'unixepoch');
-
-def create_flights():
+def create_tables():
     with open('create.sql', 'r') as sql_file:
         sql_script = sql_file.read()
-
     cursor = conn.cursor()
     cursor.executescript(sql_script)
     conn.commit()
-
-
-# def create_flights():
-#     conn.execute("DROP TABLE IF EXISTS flights")
-#     conn.execute("CREATE TABLE flights (flight_ID VARCHAR(20), origin VARCHAR(20), destination VARCHAR(20), pilotID VARCHAR(20), departuredate DATE, departuretime VARCHAR(20), PRIMARY KEY (flight_ID))")
-#     # time = time()
-#     conn.execute("INSERT INTO flights (flight_ID,origin,destination,pilotID,departuredate,departuretime)VALUES \
-#   ('LS1339','Birmingham','Vienna','1','2025-02-04','" + "12:00:00" + "')")
-
-def create_destinations():
-    conn.execute("DROP TABLE IF EXISTS destinations")
-    conn.execute("CREATE TABLE destinations (destination_ID VARCHAR(20), latitude VARCHAR(20), longitude VARCHAR(20))")
-
-def create_pilots():
-    conn.execute("DROP TABLE IF EXISTS pilots")
-    conn.execute("CREATE TABLE pilots (pilot_ID VARCHAR(20), forename VARCHAR(20), surname VARCHAR(20))")
-    i = 0
-    for name in firstnames:
-        conn.execute("INSERT INTO pilots (pilot_ID,forename,surname)VALUES \
-  ('" + pilotID[i] +"','" + name + "','" + str(surnames[i]) + "')")
-        i = i+1
 
 def check_item(table, column, name):
     # check whether an item is an a column of a specific table.
@@ -107,6 +63,7 @@ def assign(pilot_ID,flight_ID):
     conn.commit()
 
 def view_flights():
+    #Command triggered by 'VIEWFLIGHTS'
     cursor = conn.execute("SELECT origin,destination,departuredate,departuretime from flights")
     for row in cursor:
         print("origin = ", row[0])
@@ -166,17 +123,18 @@ def process_command(string):
     print(commands(result))
 
 def initialise():
-    create_flights()
-    # create_destinations()
-    # create_pilots()
+    create_tables()
     welcome_sequence()
 
 ###################
 main_loop = True
 def main_loop_fct():
+    #Main loop function that reads commands
     while main_loop == True:
         process_command(input())
 
 if __name__== '__main__':
+    conn = sqlite3.connect('store.db')
+    print ("Database has been created")
     initialise()
     main_loop_fct()

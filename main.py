@@ -1,6 +1,7 @@
 import sqlite3
-conn = sqlite3.connect('store')
+conn = sqlite3.connect('store.db')
 print ("Database has been created")
+
 
 #########This section of code needs to be moved
 # with open('scheduling.sql', 'r') as sql_file:
@@ -16,18 +17,26 @@ firstnames = ['Pedro', 'William', 'Numaan', 'Themiya', 'Mohammed', 'Thomas','Sar
 surnames = ['Jones','Mason','Murphy','Sanchez','Disraeli','Higgins','Smith','Gladstone','Cameron','Rubio','Fitzgerald','Western','Brown','McGlynn','McGrath','Siriwardhana']
 pilotID = ['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16']
 
-
 cities = ['Birmingham','Manchester','London','Bristol','Paris','Toulouse','Berlin','Madrid','Barcelona','Ibiza','Rome','Florence','Geneva','Frankfurt']
 
 # def time():
 #     conn.execute(SELECT datetime(strftime('%s', '2000-01-01 00:00:00') + abs(random() % (strftime('%s', '2000-01-31 23:59:59') - strftime('%s', '2000-01-01 00:00:00') )),'unixepoch');
 
 def create_flights():
-    conn.execute("DROP TABLE IF EXISTS flights")
-    conn.execute("CREATE TABLE flights (flight_ID VARCHAR(20), origin VARCHAR(20), destination VARCHAR(20), pilotID VARCHAR(20), departuredate DATE, departuretime VARCHAR(20), PRIMARY KEY (flight_ID))")
-    # time = time()
-    conn.execute("INSERT INTO flights (flight_ID,origin,destination,pilotID,departuredate,departuretime)VALUES \
-  ('LS1339','Birmingham','Vienna','1','2025-02-04','" + "12:00:00" + "')")
+    with open('create.sql', 'r') as sql_file:
+        sql_script = sql_file.read()
+
+    cursor = conn.cursor()
+    cursor.executescript(sql_script)
+    conn.commit()
+
+
+# def create_flights():
+#     conn.execute("DROP TABLE IF EXISTS flights")
+#     conn.execute("CREATE TABLE flights (flight_ID VARCHAR(20), origin VARCHAR(20), destination VARCHAR(20), pilotID VARCHAR(20), departuredate DATE, departuretime VARCHAR(20), PRIMARY KEY (flight_ID))")
+#     # time = time()
+#     conn.execute("INSERT INTO flights (flight_ID,origin,destination,pilotID,departuredate,departuretime)VALUES \
+#   ('LS1339','Birmingham','Vienna','1','2025-02-04','" + "12:00:00" + "')")
 
 def create_destinations():
     conn.execute("DROP TABLE IF EXISTS destinations")
@@ -68,8 +77,8 @@ def view_schedule(name,surname):
     print("Please type the forename of the pilot")
     print("Please type the surname of the pilot")
     # check that the pilot is included in the list
-    if check_item('flight', 'destination', temp_origin) == False:
-        print("Origin not found, please select an origin")
+    # if check_item('flight', 'destination', temp_origin) == False:
+    #     print("Origin not found, please select an origin")
     # if name == '' and surname == '':
     #     print('Showing list of pilots')
     #     #show list of pilots and prompt to select from list.
@@ -144,30 +153,26 @@ def commands(letter):
             return (assign())
         case 'VIEWSCHEDULE':
             return (view_schedule())
-        case 'VIEWDESTINTATIONS':
-            return (view_destinations())
-        case 'UPDATEDESTINATION':
-            return (update_destination)
-        case 'ADDDESTINATION':
-            return (add_destination())
+        # case 'VIEWDESTINTATIONS':
+        #     return (view_destinations())
+        # case 'UPDATEDESTINATION':
+        #     return (update_destination)
+        # case 'ADDDESTINATION':
+        #     return (add_destination())
 
 def process_command(string):
     result = string.split()
     print(result)
     print(commands(result))
 
-
 def initialise():
     create_flights()
+    # create_destinations()
+    # create_pilots()
     welcome_sequence()
-    create_destinations()
-    create_pilots()
 
 ###################
 main_loop = True
-
-check_item('flights','destination','Vienna')
-
 def main_loop_fct():
     while main_loop == True:
         process_command(input())

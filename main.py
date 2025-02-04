@@ -4,11 +4,12 @@ print ("Database has been created")
 
 
 firstnames = ['Pedro', 'William', 'Numaan', 'Themiya', 'Mohammed', 'Thomas','Sarah', 'Zoe', 'Natalie','Alice','Verity','Zainab','Peter','James','Joanna','Sinead']
-surnames = ['Murphy','Sanchez','Disraeli','Higgins','Smith','Gladstone','Cameron','Rubio','Fitzgerald','Western','Brown','McGlynn','McGrath','Siriwardhana']
+surnames = ['Jones','Mason','Murphy','Sanchez','Disraeli','Higgins','Smith','Gladstone','Cameron','Rubio','Fitzgerald','Western','Brown','McGlynn','McGrath','Siriwardhana']
 
 cities = ['Birmingham','Manchester','London','Bristol','Paris','Toulouse','Berlin','Madrid','Barcelona','Ibiza','Rome','Florence','Geneva','Frankfurt']
 
-
+# def time():
+#     conn.execute(SELECT datetime(strftime('%s', '2000-01-01 00:00:00') + abs(random() % (strftime('%s', '2000-01-31 23:59:59') - strftime('%s', '2000-01-01 00:00:00') )),'unixepoch');
 
 def create_flights():
     conn.execute("DROP TABLE IF EXISTS flights")
@@ -23,11 +24,17 @@ def create_destinations():
 def create_pilots():
     conn.execute("DROP TABLE IF EXISTS pilots")
     conn.execute("CREATE TABLE pilots (pilot_ID VARCHAR(20), forename VARCHAR(20), surname VARCHAR(20))")
+    for name in firstnames:
+        conn.execute("INSERT INTO flights (flight_ID,origin,destination,pilotID,departuredate,departuretime)VALUES \
+  ('LS1339','Birmingham','Vienna','1','2025-02-04','15:40')")
 
 def check_item(table, column, name):
     # check whether an item is an a column of a specific table.
-    # conn.execute
-    print("Testing whether it is in")
+    test = conn.execute("SELECT COUNT(1) FROM " + table + " WHERE "+ column + " = '" +  name + "';") #this works
+    if next(test)[0] == 1:
+        return True
+    else:
+        return False   
 
 def add_flight(parameters):
     print("Please type the origin of the flight")
@@ -89,6 +96,10 @@ def view_flights():
 
 def update_flight():
     print('updating flights')
+    print("What is the flightID that you want to edit?")
+    ##check whether the flight is included in the list
+
+
 
 
 def welcome_sequence():
@@ -129,8 +140,7 @@ welcome_sequence()
 create_destinations()
 create_pilots()
 
-
-
+check_item('flights','destination','Vienna')
 
 while main == True:
     process_command(input())

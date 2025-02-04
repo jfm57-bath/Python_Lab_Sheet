@@ -2,6 +2,16 @@ import sqlite3
 conn = sqlite3.connect('store')
 print ("Database has been created")
 
+#########This section of code needs to be moved
+# with open('scheduling.sql', 'r') as sql_file:
+#     sql_script = sql_file.read()
+
+# db = sqlite3.connect('scheduling.db')
+# cursor = db.cursor()
+# cursor.executescript(sql_script)
+# db.commit()
+# db.close()
+
 firstnames = ['Pedro', 'William', 'Numaan', 'Themiya', 'Mohammed', 'Thomas','Sarah', 'Zoe', 'Natalie','Alice','Verity','Zainab','Peter','James','Joanna','Sinead']
 surnames = ['Jones','Mason','Murphy','Sanchez','Disraeli','Higgins','Smith','Gladstone','Cameron','Rubio','Fitzgerald','Western','Brown','McGlynn','McGrath','Siriwardhana']
 pilotID = ['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16']
@@ -14,7 +24,7 @@ cities = ['Birmingham','Manchester','London','Bristol','Paris','Toulouse','Berli
 
 def create_flights():
     conn.execute("DROP TABLE IF EXISTS flights")
-    conn.execute("CREATE TABLE flights (flight_ID VARCHAR(20), origin VARCHAR(20), destination VARCHAR(20), pilotID VARCHAR(20), departuredate DATE, departuretime VARCHAR(20))")
+    conn.execute("CREATE TABLE flights (flight_ID VARCHAR(20), origin VARCHAR(20), destination VARCHAR(20), pilotID VARCHAR(20), departuredate DATE, departuretime VARCHAR(20), PRIMARY KEY (flight_ID))")
     # time = time()
     conn.execute("INSERT INTO flights (flight_ID,origin,destination,pilotID,departuredate,departuretime)VALUES \
   ('LS1339','Birmingham','Vienna','1','2025-02-04','" + "12:00:00" + "')")

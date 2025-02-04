@@ -1,5 +1,9 @@
 import sqlite3
 
+def help():
+    print("The commands are:")
+    print("ADD, VIEWFLIGHTS, VIEWPILOTS")
+
 def create_tables():
     with open('create.sql', 'r') as sql_file:
         sql_script = sql_file.read()
@@ -76,7 +80,10 @@ def assign(pilot_ID,flight_ID):
         print("time = ", row[3], "\n")
     ##Allow the user to select one of flights by ID
     ##Show list of pilots
-    ##Add an update to change the field. 
+    ##Add an update to change the field.
+
+    update_statement = "UPDATE table_name SET column1 = ?, column2 = ? WHERE id = ?"
+
     print('Assigning pilot to this flight')
     conn.commit()
 
@@ -134,6 +141,12 @@ def commands(letter):
         #     return (update_destination)
         # case 'ADDDESTINATION':
         #     return (add_destination())
+        case 'HELP':
+            return help()
+        case _:
+            print("Command not found")
+            return help()
+
 
 def process_command(string):
     commands(string.split())

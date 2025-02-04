@@ -4,6 +4,8 @@ print ("Database has been created")
 
 firstnames = ['Pedro', 'William', 'Numaan', 'Themiya', 'Mohammed', 'Thomas','Sarah', 'Zoe', 'Natalie','Alice','Verity','Zainab','Peter','James','Joanna','Sinead']
 surnames = ['Jones','Mason','Murphy','Sanchez','Disraeli','Higgins','Smith','Gladstone','Cameron','Rubio','Fitzgerald','Western','Brown','McGlynn','McGrath','Siriwardhana']
+pilotID = ['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16']
+
 
 cities = ['Birmingham','Manchester','London','Bristol','Paris','Toulouse','Berlin','Madrid','Barcelona','Ibiza','Rome','Florence','Geneva','Frankfurt']
 
@@ -24,9 +26,11 @@ def create_destinations():
 def create_pilots():
     conn.execute("DROP TABLE IF EXISTS pilots")
     conn.execute("CREATE TABLE pilots (pilot_ID VARCHAR(20), forename VARCHAR(20), surname VARCHAR(20))")
+    i = 0
     for name in firstnames:
-        conn.execute("INSERT INTO flights (flight_ID,origin,destination,pilotID,departuredate,departuretime)VALUES \
-  ('LS1339','Birmingham','Vienna','1','2025-02-04','15:40')")
+        conn.execute("INSERT INTO pilots (pilot_ID,forename,surname)VALUES \
+  ('" + pilotID[i] +"','" + name + "','" + str(surnames[i]) + "')")
+        i = i+1
 
 def check_item(table, column, name):
     # check whether an item is an a column of a specific table.
@@ -92,6 +96,14 @@ def view_flights():
         print("time = ", row[3], "\n")
     print('viewing flights')
 
+def view_pilots():
+    cursor = conn.execute("SELECT pilot_ID,forename,surname from pilots")
+    for row in cursor:
+        print("pilot_ID = ", row[0])
+        print("forename = ", row[1])
+        print("surname = ", row[2], "\n")
+    print('viewing pilots')
+
 def update_flight():
     print('updating flights')
     print("What is the flightID that you want to edit?")
@@ -116,6 +128,8 @@ def commands(letter):
             return (view_flights())
         case 'UPDATE':
             return (update_flight())
+        case 'VIEWPILOTS':
+            return(view_pilots())
         case 'ASSIGN':
             return (assign())
         case 'VIEWSCHEDULE':
@@ -133,28 +147,21 @@ def process_command(string):
     print(commands(result))
 
 
-
-
-
+def initialise():
+    create_flights()
+    welcome_sequence()
+    create_destinations()
+    create_pilots()
 
 ###################
-main = True
-
-create_flights()
-welcome_sequence()
-create_destinations()
-create_pilots()
+main_loop = True
 
 check_item('flights','destination','Vienna')
 
-# def main_fct():
-#     #loop
+def main_loop_fct():
+    while main_loop == True:
+        process_command(input())
 
-
-while main == True:
-    process_command(input())
-    
-
-
-# if __name__=='main':
-#     main_fct
+if __name__== '__main__':
+    initialise()
+    main_loop_fct()

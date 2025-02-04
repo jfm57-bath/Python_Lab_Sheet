@@ -2,8 +2,8 @@
 
 -- Create table
 DROP TABLE IF EXISTS flights;
-CREATE TABLE flights (flight_ID VARCHAR(20), origin VARCHAR(20), status VARCHAR(20), destination VARCHAR(20), pilotID VARCHAR(20), departuredate DATE, departuretime VARCHAR(20), PRIMARY KEY (flight_ID));
-INSERT INTO flights (flight_ID,origin,destination,pilotID,departuredate,departuretime)VALUES
+CREATE TABLE flights (flight_ID VARCHAR(20), origin VARCHAR(20), status VARCHAR(20), destination VARCHAR(20), pilot_ID VARCHAR(20), departuredate DATE, departuretime VARCHAR(20), PRIMARY KEY (flight_ID));
+INSERT INTO flights (flight_ID,origin,destination,pilot_ID,departuredate,departuretime)VALUES
    ('1','Birmingham','Vienna','1','2025-02-04','12:00:00'),
    ('2','Birmingham','London','1','2025-02-04','12:00:00'),
    ('3','Birmingham','Madrid','1','2025-02-04','12:00:00'),

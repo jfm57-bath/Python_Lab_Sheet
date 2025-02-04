@@ -16,17 +16,34 @@ def check_item(table, column, name):
         return False   
 
 def add_flight(parameters):
-    print("Please type the origin of the flight")
-    temp_origin = input()
-    if check_item('flight', 'destination', temp_origin) == False:
-        print("Origin not found, please select an origin")
-    else:
-        origin = temp_origin
-    print("Please type the destination of the flight")
-    temp_destination = input()
+    progress = False
+    while progress == False:
+        print("Please type the origin of the flight")
+        temp_origin = input()
+        if check_item('destinations', 'name', temp_origin) == False:
+            print("Origin not found, please select an origin")
+        else:
+            origin = temp_origin
+            progress = True
+
+    progress = False
+    while progress == False:
+        print("Please type the destination of the flight")
+        temp_destination = input()
+        if check_item('destinations', 'name', temp_origin) == False:
+            print("Origin not found, please select an origin")
+        else:
+            destination = temp_destination ##do a lookup here
+            progress = True
+
     print(str(parameters) + 'parameters')
-    conn.execute("INSERT INTO flights (flight_ID,origin,destination,pilotID,departuredate,departuretime)VALUES \
-  ('BHX455','Birmingham','Ibiza','123','2001-02-04','15:23')")
+    print("Please enter the departure date")
+    temp_departuredate = input()
+    print("Please enter the departure time")
+    temp_departuretime = input()
+
+    conn.execute("INSERT INTO flights (flight_ID, origin,destination,pilot_ID,departuredate,departuretime)VALUES \
+  ('BHX455','Birmingham','" + temp_destination + "','123','" + temp_departuredate +"','" + temp_departuretime + "')")
     conn.commit()
 
 def view_schedule(name,surname):

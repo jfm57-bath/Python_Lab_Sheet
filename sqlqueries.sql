@@ -31,7 +31,33 @@
 -- SELECT * FROM flights;
 
 -- Change all flights to Spain to cancelled
---UPDATE (SELECT * FROM flights JOIN destinations ON flights.destination=destinations.name) SET status = 'Cancelled' WHERE country = 'Spain';
-
 --UPDATE flights SET status = 'Cancelled' WHERE flight_ID in (SELECT flight_ID FROM flights JOIN destinations ON flights.destination=destinations.name WHERE country = 'Spain');
-SELECT * FROM flights;
+-- SELECT * FROM flights;
+
+-- Assign pilot to a null flight
+-- UPDATE flights SET pilot_ID = '2';
+-- SELECT * FROM flights;
+
+--Assign pilot to all null flights
+-- UPDATE flights SET pilot_ID = '2' WHERE pilot_ID IS NULL;
+-- SELECT * FROM flights;
+
+-- View specific pilot’s schedule
+-- SELECT * FROM flights WHERE pilot_ID = '2'
+
+--View destinations outside England
+-- SELECT * FROM (SELECT * FROM flights JOIN destinations ON flights.destination=destinations.name WHERE country <> 'England');
+
+--Count number of flights
+-- SELECT COUNT(*) FROM flights;
+
+--Count number of flights from Birmingham
+SELECT COUNT(*) FROM flights WHERE origin = 'Birmingham';
+
+-- Count number of flights assigned to a particular pilot
+-- SELECT COUNT(*) FROM flights WHERE pilot_ID = '2';
+
+--Count number of flights assigned to male pilots
+-- SELECT COUNT(*) FROM flights WHERE origin = 'Birmingham';
+
+

@@ -20,6 +20,16 @@ INSERT INTO flights (flight_ID,origin,destination,pilot_ID,departuredate,departu
    ('14','Birmingham','Vienna','1','2025-02-04','12:00:00'),
    ('15','Birmingham','Vienna','1','2025-02-04','12:00:00');
 
+-- Create flights without pilot assigned
+INSERT INTO flights (flight_ID,origin,destination,departuredate,departuretime)VALUES
+   ('16','Birmingham','Vienna','2025-02-04','12:00:00'),
+   ('17','Birmingham','Vienna','2025-02-04','12:00:00'),
+   ('18','Birmingham','Vienna','2025-02-04','12:00:00'),
+   ('19','Birmingham','Vienna','2025-02-04','12:00:00'),
+   ('20','Birmingham','Vienna','2025-02-04','12:00:00');
+
+
+
 -- Create table
 DROP TABLE IF EXISTS destinations;
 CREATE TABLE destinations (destination_ID VARCHAR(3), name VARCHAR(20), latitude VARCHAR(20), longitude VARCHAR(20), country VARCHAR(20));

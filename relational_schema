@@ -1,30 +1,39 @@
-https://dbdiagram.io/d
+//https://dbdiagram.io/d
 
 Table pilots {
-  pilot_ID integer
-  surname string
-  forename string
+  pilot_ID integer [primary key]
+  forename varchar
+  surname varchar
+  sex varchar
   DOB date
-  sex string
 }
 
 Table flights {
   flight_ID integer [primary key]
   pilot_ID integer
+  plane_ID integer
   status varchar
-  origin_code varchar
-  destination_code varchar
+  origin varchar
+  destination varchar
+  departuredate date
+  departuretime time
 }
 
-Table posts {
-  id integer [primary key]
-  title varchar
-  body text [note: 'Content of the post']
-  user_id integer
-  status varchar
-  created_at timestamp
+Table planes {
+  plane_ID integer [primary key]
+  model varchar
+  commissiondate date
 }
 
-Ref: posts.user_id > flights.flight_ID // many-to-one
+Table destinations {
+  destination_ID integer [primary key]
+  name varchar
+  latitude varchar 
+  longitude varchar
+  country varchar [note: 'Content of the post']
+}
 
-Ref: flights.flight_ID < pilots.pilot_ID
+Ref: flights.pilot_ID < pilots.pilot_ID
+Ref: flights.origin < destinations.destination_ID
+Ref: flights.destination < destinations.destination_ID
+Ref: flights.plane_ID < planes.plane_ID

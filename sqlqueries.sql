@@ -35,7 +35,7 @@ UPDATE flights SET status = 'Cancelled' WHERE flight_ID in (SELECT flight_ID FRO
 -- SELECT * FROM flights;
 
 -- Assign pilot to a null flight
--- UPDATE flights SET pilot_ID = '2';
+-- UPDATE flights SET pilot_ID = '2' WHERE flight_ID = '16';
 -- SELECT * FROM flights;
 
 --Assign pilot to all null flights

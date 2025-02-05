@@ -11,34 +11,38 @@ def help():
     print("case 'UPDATEDESTINATION': #View/Update Destination Information")
     print("case 'VIEWPILOTS': #View all pilot information")
     print("case 'VIEWFLIGHTS': #View all the flights in the database")
-         
-
-
 
 def create_tables():
     #Function to create the tables by executing the create.sql file
-    with open('create.sql', 'r') as sql_file:
-        sql_script = sql_file.read()
-    cursor = conn.cursor()
-    cursor.executescript(sql_script)
-    conn.commit()
+    try:
+        with open('create.sql', 'r') as sql_file:
+            sql_script = sql_file.read()
+        cursor = conn.cursor()
+        cursor.executescript(sql_script)
+        conn.commit()
+    except Exception as e:
+    # Roll back changes if anything goes wrong and raise exception
+        conn.rollback()
+        raise e
 
 def check_item(table, column, name):
     # Function to check whether an item is an a column of a specific table
-    test = conn.execute("SELECT COUNT(1) FROM " + table + " WHERE "+ column + " = '" +  name + "';") #this works
-    if next(test)[0] == 1:
+    test = conn.execute("SELECT COUNT(1) FROM " + table + " WHERE "+ column + " = '" +  name + "';") #query to identify item from table
+    if next(test)[0] == 1: #if found return true
         return True
-    else:
+    else: #if not found return false
         return False   
 
 def add_flight(parameters):
     #Function to add a flight
-    progress = False
+    progress = False #boolean variable to control progression through steps
     while progress == False:
         print("Please type the origin of the flight")
         temp_origin = input()
         if check_item('destinations', 'name', temp_origin) == False:
             print("Origin not found, please select an origin")
+        elif temp_origin == 'CANCEL':
+            return None
         else:
             origin = temp_origin
             progress = True
@@ -49,8 +53,9 @@ def add_flight(parameters):
         temp_destination = input()
         if check_item('destinations', 'name', temp_origin) == False:
             print("Origin not found, please select an origin")
+        elif temp_destination == 'CANCEL':
+            return None
         else:
-            destination = temp_destination ##do a lookup here
             progress = True
 
     print("Please enter the departure date")
@@ -59,11 +64,15 @@ def add_flight(parameters):
     print("Please enter the departure time")
     temp_departuretime = input()
 
-    conn.execute("INSERT INTO flights (origin,destination,departuredate,departuretime)VALUES \
-  ('"+ temp_origin + "','" + temp_destination + "','" + temp_departuredate +"','" + temp_departuretime + "')")
-    conn.commit()
-
-    print("Flight successfully added!")
+    try:
+        conn.execute("INSERT INTO flights (origin,destination,departuredate,departuretime)VALUES \
+        '"+ temp_origin + "','" + temp_destination + "','" + temp_departuredate +"','" + temp_departuretime + "')")
+        conn.commit()
+        print("Flight successfully added!")
+    except Exception as e:
+    # Roll back changes if anything goes wrong and raise exception
+        conn.rollback()
+        raise e
 
 def view_schedule():
     print("Please type the forename of the pilot")
@@ -72,45 +81,60 @@ def view_schedule():
     temp_surname = input()
 
     #Check whether the combination of forename and surname can be found in the pilots table.
-    cursor = conn.execute("SELECT pilot_ID from pilots WHERE forename = '" + temp_forename + "' AND surname = '" + temp_surname + "';")
+
+    try:
+        cursor = conn.execute("SELECT pilot_ID from pilots WHERE forename = '" + temp_forename + "' AND surname = '" + temp_surname + "';")
+        for row in cursor:
+            print("pilot_ID = ", row[0])
+            temp_pilot_ID = row[0]
+
+        print("Query")
+        cursor = conn.execute("SELECT origin,destination,departuredate,departuretime from flights WHERE pilot_ID= '" + str(temp_pilot_ID) + "';")
+    
+        print("The flights for " + temp_forename + " " + temp_surname + " are:")
+        for row in cursor:
+            print("origin = ", row[0])
+            print("destination = ", row[1])
+            print("date = ", row[2])
+            print("time = ", row[3], "\n")
+    except Exception as e:
+    # Roll back changes if anything goes wrong and raise exception
+        conn.rollback()
+        raise e
+
+def assign():
+    print("The flights that currently do not have a pilot are:") 
+    cursor = conn.execute("SELECT flight_ID,origin,destination,departuredate,departuretime from flights WHERE pilot_ID IS NULL")
+    
+    for row in cursor:
+        print("flight_ID = ", row[0])
+        print("origin = ", row[1])
+        print("destination = ", row[2])
+        print("date = ", row[3])
+        print("time = ", row[4], "\n")
+
+    print("What is the flight_ID that you want to assign a pilot to?")
+    temp_flight_ID = input()
+    
+    print("The pilots are:")
+    cursor = conn.execute("SELECT pilot_ID,forename,surname from pilots")
+    
     for row in cursor:
         print("pilot_ID = ", row[0])
-        temp_pilot_ID = row[0]
+        print("forename = ", row[1])
+        print("surname = ", row[2],"\n")
 
-    # check that the pilot is included in the list
-    # if check_item('flight', 'destination', temp_origin) == False:
-    #     print("Origin not found, please select an origin")
-    # if name == '' and surname == '':
-    #     print('Showing list of pilots')
-    #     #show list of pilots and prompt to select from list.
-    # else:
-    #     print('Searching records')
-    print("Query")
-    cursor = conn.execute("SELECT origin,destination,departuredate,departuretime from flights WHERE pilot_ID= '" + str(temp_pilot_ID) + "';")
-    
-    print("The flights for " + temp_forename + " " + temp_surname + " are:")
-    for row in cursor:
-        print("origin = ", row[0])
-        print("destination = ", row[1])
-        print("date = ", row[2])
-        print("time = ", row[3], "\n")
+    print("What is the pilot_ID that you want to assign to the flight?")
+    temp_pilot_ID = input()
 
-def assign(pilot_ID,flight_ID):
-    #change line below to a query for flights that currently don't have a pilot assigned. 
-    cursor = conn.execute("SELECT origin,destination,departuredate,departuretime from flights")
-    for row in cursor:
-        print("origin = ", row[0])
-        print("destination = ", row[1])
-        print("date = ", row[2])
-        print("time = ", row[3], "\n")
-    ##Allow the user to select one of flights by ID
-    ##Show list of pilots
-    ##Add an update to change the field.
-
-    update_statement = "UPDATE table_name SET column1 = ?, column2 = ? WHERE id = ?"
-
-    print('Assigning pilot to this flight')
-    conn.commit()
+    try:
+        conn.execute("UPDATE flights SET pilot_ID = '" + str(temp_pilot_ID) + "' WHERE flight_ID = '" + str(temp_flight_ID) + "';")
+        conn.commit()
+        print('Successfully assigned pilot to this flight')
+    except Exception as e:
+    # Roll back changes if anything goes wrong and raise exception
+        conn.rollback()
+        raise e  
 
 def view_flights():
     #Command triggered by 'VIEWFLIGHTS'

@@ -8,9 +8,9 @@ def help():
     print("case 'UPDATESTATUS': #Update Flight Information")
     print("case 'ASSIGN': #Assign Pilot to Flight")
     print("case 'VIEWSCHEDULE': #View Pilot Schedule")
-    print("case 'UPDATEDESTINATION': #View/Update Destination Information")
     print("case 'VIEWPILOTS': #View all pilot information")
     print("case 'VIEWFLIGHTS': #View all the flights in the database")
+    print("case 'DELETEFLIGHT': #Delete a flight")
 
 def create_tables():
     #Function to create the tables by executing the create.sql file
@@ -138,13 +138,14 @@ def assign():
 
 def view_flights():
     #Command triggered by 'VIEWFLIGHTS'
-    cursor = conn.execute("SELECT origin,destination,departuredate,departuretime from flights")
+    cursor = conn.execute("SELECT flight_ID,origin,destination,departuredate,departuretime from flights")
     for row in cursor:
-        print("origin = ", row[0])
-        print("destination = ", row[1])
-        print("date = ", row[2])
-        print("time = ", row[3], "\n")
-    print('viewing flights')
+        print("flight_ID = ", row[0])
+        print("origin = ", row[1])
+        print("destination = ", row[2])
+        print("date = ", row[3])
+        print("time = ", row[4], "\n")
+    print('Successfully viewed flights')
 
 def filter_flight():
     print("What column do you want to filter by?")
@@ -166,10 +167,24 @@ def view_pilots():
         print("pilot_ID = ", row[0])
         print("forename = ", row[1])
         print("surname = ", row[2], "\n")
-    print('viewing pilots')
+    print('Successfully viewed pilots')
 
-def update_destination():
-    print("updating destination")
+def delete_flight():
+    print("What is the flightID that you want to delete?")
+    temp_flight_ID = input()
+    if check_item('flights','flight_ID',temp_flight_ID) == False:
+        print("There is no flight with this ID")
+        print("DELETE flight command failed")
+    else:
+        try:
+            conn.execute("DELETE from flights WHERE flight_ID = '" + str(temp_flight_ID) + "';")
+            conn.commit()
+            print("Successfully deleted flight")
+        except Exception as e:
+        # Roll back changes if anything goes wrong and raise exception
+            conn.rollback()
+            print("DELETE flight command failed")  
+            raise e     
 
 def update_flight():
     #Command to update flight status
@@ -179,12 +194,20 @@ def update_flight():
     if check_item('flights','flight_ID',temp_flight_ID) == False:
         print("There is no flight with this ID")
     else:
-        cursor = conn.execute("SELECT status FROM flights WHERE flight_ID='" + temp_flight_ID + "';")
-        for row in cursor:
-            print("Current flight status = ", row[0])
-        print("What is the new status of the flight")
-        temp_status = input()
-        cursor = conn.execute("UPDATE flights SET status = '" + temp_status + "' WHERE flight_ID = " + temp_flight_ID + ";")
+        try:
+            cursor = conn.execute("SELECT status FROM flights WHERE flight_ID='" + temp_flight_ID + "';")
+            for row in cursor:
+                print("Current flight status = ", row[0])
+            print("What is the new status of the flight")
+            temp_status = input()
+            cursor = conn.execute("UPDATE flights SET status = '" + temp_status + "' WHERE flight_ID = " + temp_flight_ID + ";")
+            conn.commit()
+            print("Successfully updated flight status")
+        except Exception as e:
+        # Roll back changes if anything goes wrong and raise exception
+            conn.rollback()
+            print("Failed to update flight status")  
+            raise e    
 
 def welcome_sequence():
     print("Welcome to the flight management system. The database has been created already.\nYou can use the command line to enter your commands to create, retrieve, update and delete data.")
@@ -203,12 +226,12 @@ def commands(letter):
             return (assign())
         case 'VIEWSCHEDULE': #View Pilot Schedule
             return (view_schedule())
-        case 'UPDATEDESTINATION': #View/Update Destination Information
-            return (update_destination())
         case 'VIEWPILOTS': #View all pilot information
             return(view_pilots())
         case 'VIEWFLIGHTS': #View all the flights in the database
             return (view_flights())
+        case 'DELETEFLIGHT': #Delete a flight
+            return (delete_flight())
         case 'HELP':
             return help()
         case _:

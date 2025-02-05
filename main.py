@@ -66,7 +66,7 @@ def add_flight(parameters):
 
     try:
         conn.execute("INSERT INTO flights (origin,destination,departuredate,departuretime)VALUES \
-        '"+ temp_origin + "','" + temp_destination + "','" + temp_departuredate +"','" + temp_departuretime + "')")
+  ('"+ temp_origin +"','" + temp_destination + "','" + temp_departuredate +"','" + temp_departuretime + "')")
         conn.commit()
         print("Flight successfully added!")
     except Exception as e:
